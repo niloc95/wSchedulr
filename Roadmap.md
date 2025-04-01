@@ -45,3 +45,41 @@ Apply what we learned to your main server:
 - Staff management
 - Business hours configuration
 - Service management
+
+
+
+# WebSchedulr - Modern Scheduling Application
+
+WebSchedulr is a flexible, powerful scheduling and appointment management system built with React, TypeScript, and Node.js. It supports both MySQL and SQLite databases, making it suitable for various deployment environments.
+
+## Features
+
+- **Multi-database Support**: Works with MySQL or SQLite
+- **Modern Interface**: Built with React 19 and Vite for a responsive UI
+- **Calendar Management**: Interactive scheduling with FullCalendar integration
+- **User Management**: Role-based access control system
+- **Installation Wizard**: Easy setup process for new deployments
+
+## Installation
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- MySQL server (if using MySQL option)
+- Modern web browser
+
+### Quick Start
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/webschedulr.git
+   cd webschedulr
+
+2. Install dependencies:
+    npm install
+
+3. Start the application:
+    npm run start
+
+4. Open your browser and navigate to: 
+    http://localhost:5173/

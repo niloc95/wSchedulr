@@ -83,3 +83,6 @@ WebSchedulr is a flexible, powerful scheduling and appointment management system
 
 4. Open your browser and navigate to: 
     http://localhost:5173/
+
+
+    

@@ -46,8 +46,6 @@ Apply what we learned to your main server:
 - Business hours configuration
 - Service management
 
-
-
 # WebSchedulr - Modern Scheduling Application
 
 WebSchedulr is a flexible, powerful scheduling and appointment management system built with React, TypeScript, and Node.js. It supports both MySQL and SQLite databases, making it suitable for various deployment environments.

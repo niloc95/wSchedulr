@@ -297,18 +297,12 @@ export default function InstallationPage() {
           type: 'success'
         });
         
-        console.log('Installation successful, redirecting to dashboard soon...');
-        
-        // Store installation state in localStorage to persist across refreshes
+        // Store installation state in localStorage
         localStorage.setItem('isInstalled', 'true');
         
-        // Get redirect path from server response or use default
-        const redirectTo = response.data.redirect || '/dashboard';
-        
-        // Wait a moment before redirecting
+        // Redirect to login page instead of dashboard
         setTimeout(() => {
-          console.log('Redirecting to:', redirectTo);
-          navigate(redirectTo);
+          navigate('/login'); // Redirect to login page
         }, 2000);
       }
     } catch (error: unknown) {

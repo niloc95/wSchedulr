@@ -297,11 +297,17 @@ export default function InstallationPage() {
           type: 'success'
         });
         
+        console.log('Installation successful, redirecting to dashboard soon...');
+        
+        // Store installation state in localStorage to persist across refreshes
+        localStorage.setItem('isInstalled', 'true');
+        
         // Get redirect path from server response or use default
         const redirectTo = response.data.redirect || '/dashboard';
         
         // Wait a moment before redirecting
         setTimeout(() => {
+          console.log('Redirecting to:', redirectTo);
           navigate(redirectTo);
         }, 2000);
       }

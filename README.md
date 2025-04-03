@@ -1,3 +1,27 @@
+## Installation
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- MySQL server (if using MySQL option)
+- Modern web browser
+
+### Quick Start
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/webschedulr.git
+   cd webschedulr
+
+2. Install dependencies:
+    npm install
+
+3. Start the application:
+    npm run start
+
+4. Open your browser and navigate to: 
+    http://localhost:5173/
+
 # Success! Now Let's Move Forward with Your WebSchedulr App
 
 Congratulations on getting the installation process working! This was a complex issue that required several fixes:
@@ -60,29 +84,53 @@ WebSchedulr is a flexible, powerful scheduling and appointment management system
 - **User Management**: Role-based access control system
 - **Installation Wizard**: Easy setup process for new deployments
 
-## Installation
 
-### Prerequisites
+## Application Flow
 
-- Node.js 18+ and npm
-- MySQL server (if using MySQL option)
-- Modern web browser
+### Installation Process
 
-### Quick Start
+WebSchedulr features a complete installation wizard that helps you set up your scheduling system:
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/webschedulr.git
-   cd webschedulr
+1. **First Visit**: System detects if installation is needed
+2. **Database Setup**: Choose between MySQL or SQLite
+3. **Admin Creation**: Set up your administrator account
+4. **Company Details**: Add your business information
 
-2. Install dependencies:
-    npm install
+#### MySQL Installation
 
-3. Start the application:
-    npm run start
+When using MySQL, the system:
+- Creates a new database if specified
+- Sets up all required tables
+- Configures connection parameters in `.env`
+- Creates the admin user with secure password hashing
 
-4. Open your browser and navigate to: 
-    http://localhost:5173/
+#### SQLite Installation
+
+For SQLite installations:
+- Creates a local database file
+- Sets up the same schema as MySQL
+- Provides the same functionality with zero configuration
+- Perfect for small deployments or testing
+
+### Authentication System
+
+WebSchedulr implements a secure authentication system:
+- JWT (JSON Web Token) based authentication
+- Secure password storage with bcrypt hashing
+- Role-based authorization
+- Session management with remember me functionality
+
+### Development Mode
+
+For developers working on WebSchedulr:
+
+```bash
+# Start development server
+npm run dev
+
+# Start backend API server
+npm run server
+
 
 
     

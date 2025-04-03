@@ -1,10 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Rename from 'Dashboard' to 'DashboardPage' to match the file name
 export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear authentication tokens
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user');
+    
+    // Redirect to login page
+    navigate('/login');
+  };
 
   // Add effect to handle component initialization
   useEffect(() => {
@@ -84,8 +94,14 @@ export default function DashboardPage() {
           <h1 className="text-lg font-medium">Dashboard Overview</h1>
 
           <div className="flex items-center">
-            <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
-              Actions
+            <span className="mr-4 text-sm text-gray-600">
+              {JSON.parse(localStorage.getItem('user') || '{}').name || 'User'}
+            </span>
+            <button 
+              onClick={handleLogout}
+              className="text-sm px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-700"
+            >
+              Logout
             </button>
           </div>
         </header>

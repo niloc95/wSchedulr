@@ -1,90 +1,58 @@
 import Fastify from 'fastify';
-import fastifyCors from '@fastify/cors';
-import fs from 'fs/promises';
+import cors from '@fastify/cors';
+import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
-// Get directory name properly in ES Modules
+// Import your route handlers
+import authRoutes from './routes/auth.js';
+import installationRoutes from './routes/installation.js';
+
+// Load environment variables
+dotenv.config();
+
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
-// Initialize the server
+// Create Fastify instance
+const fastify = Fastify({
+  logger: true
+});
+
+// Register CORS
+fastify.register(cors, {
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+  credentials: true
+});
+
+// Register routes
+fastify.register(authRoutes, { prefix: '/api/auth' });
+fastify.register(installationRoutes, { prefix: '/api/installation' });
+
+// Add a root route for testing
+fastify.get('/', async (request, reply) => {
+  return { message: 'wSchedulr API server is running' };
+});
+
+// Add test endpoint
+fastify.post('/api/test', async (request, reply) => {
+  console.log('Received test request with body:', request.body);
+  return { success: true, message: 'Test endpoint working' };
+});
+
+// Start server
 const start = async () => {
-  // Create Fastify instance with better error logging
-  const fastify = Fastify({
-    logger: {
-      level: 'debug', // More detailed logging
-      serializers: {
-        err: (err) => {
-          return {
-            type: err.constructor.name,
-            message: err.message,
-            stack: err.stack
-          };
-        }
-      }
-    }
-  });
-  
-  // Register CORS
   try {
-    await fastify.register(fastifyCors, {
-      origin: true
+    await fastify.listen({
+      port: process.env.PORT || 3001,
+      host: '0.0.0.0'
     });
-    console.log('CORS registered successfully');
+    console.log(`Server listening on ${fastify.server.address().port}`);
   } catch (err) {
-    console.error('Failed to register CORS:', err);
-  }
-  
-  // Add a simple health check route
-  fastify.get('/api/health', async () => {
-    return { status: 'ok', mode: 'installation' };
-  });
-  
-  // Register only installation routes for now
-  try {
-    const installationRoutes = await import('./routes/installation.js');
-    fastify.register(installationRoutes.default, { prefix: '/api/installation' });
-    console.log('Installation routes registered successfully');
-  } catch (err) {
-    console.error('Failed to register installation routes:', err);
-    // Continue anyway - don't let this stop the server
-  }
-  
-  // Skip static file handling for now - focus on getting API working
-  console.log('Skipping static file handling to ensure server starts');
-
-  // Or you can use a simple handler without the plugin:
-  fastify.get('/', async (request, reply) => {
-    return reply.type('text/html').send(`
-      <!DOCTYPE html>
-      <html>
-      <head><title>WebSchedulr</title></head>
-      <body>
-        <h1>WebSchedulr API Server</h1>
-        <p>API server is running. Please use the client application.</p>
-      </body>
-      </html>
-    `);
-  });
-  
-  try {
-    // Start the server
-    await fastify.listen({ port: 3001, host: '0.0.0.0' });
-    console.log('======================================');
-    console.log('Server running on port 3001');
-    console.log('======================================');
-  } catch (err) {
-    console.error('CRITICAL ERROR starting server:', err);
+    fastify.log.error(err);
     process.exit(1);
   }
 };
 
-// Start the server with error handling
-try {
-  start();
-} catch (err) {
-  console.error('Fatal error in start function:', err);
-  process.exit(1);
-}
+start();

@@ -147,7 +147,7 @@ export default async function (fastify, options) {
     } finally {
       // Close the connection if it's not managed by fastify
       if (db && !fastify.db && process.env.DB_TYPE !== 'sqlite') {
-        await db.end();
+        // Remove the db.end() call completely as Fastify manages the connection pool
       }
     }
   });

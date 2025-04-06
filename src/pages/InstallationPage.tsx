@@ -16,7 +16,7 @@
  * After successful installation, redirects to the calendar page
  */
 
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -72,6 +72,56 @@ export default function InstallationPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [alert, setAlert] = useState<AlertState>({ show: false, message: '', type: '' });
+
+  // Check if user is already logged in and redirect if necessary
+  useEffect(() => {
+    const checkInstallationAndAuth = async () => {
+      try {
+        // Check if the app is already installed
+        const isInstalled = localStorage.getItem('isInstalled') === 'true';
+        
+        if (isInstalled) {
+          // Get token from localStorage
+          const token = localStorage.getItem('token');
+          
+          if (token) {
+            try {
+              // Check if user is logged in by verifying authentication status
+              // Note: Adjust the API URL to match your backend structure
+              const response = await axios.get('/auth/check', {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              });
+              
+              if (response.data && response.data.authenticated) {
+                console.log("User is authenticated, redirecting to dashboard");
+                // User is authenticated, redirect to dashboard
+                navigate('/dashboard');
+                return;
+              }
+            } catch (authError) {
+              console.error('Authentication check failed:', authError);
+              // If auth check fails, we'll stay on the installation page
+              // Consider clearing invalid token
+              if (axios.isAxiosError(authError) && authError.response?.status === 401) {
+                localStorage.removeItem('token');
+              }
+            }
+          }
+          
+          // If we get here, the app is installed but user is not authenticated
+          // Redirect to login instead
+          console.log("App installed but user not authenticated, redirecting to login");
+          navigate('/login');
+        }
+      } catch (error) {
+        console.error('Error checking installation status:', error);
+      }
+    };
+    
+    checkInstallationAndAuth();
+  }, [navigate]);
 
   // Admin Form State
   const [adminForm, setAdminForm] = useState<AdminFormData>({

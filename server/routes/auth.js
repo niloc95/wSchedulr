@@ -164,4 +164,45 @@ export default async function (fastify, options) {
       }
     };
   });
+
+  // Add this to your auth.js route file
+  fastify.get('/check', async (request, reply) => {
+    try {
+      // Get the token from the Authorization header
+      const authHeader = request.headers.authorization;
+      
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return { authenticated: false };
+      }
+      
+      // Extract the token
+      const token = authHeader.split(' ')[1];
+      
+      try {
+        // Verify the token
+        const decoded = jwt.verify(
+          token, 
+          process.env.JWT_SECRET || 'default-secret-key-change-in-production'
+        );
+        
+        // Token is valid
+        return { 
+          authenticated: true, 
+          userId: decoded.id,
+          username: decoded.username,
+          isAdmin: decoded.isAdmin
+        };
+      } catch (tokenError) {
+        // Token invalid or expired
+        fastify.log.info('Invalid token during auth check:', tokenError.message);
+        return { authenticated: false };
+      }
+    } catch (err) {
+      fastify.log.error('Authentication check error:', err);
+      return reply.status(500).send({ 
+        error: 'Authentication check failed', 
+        authenticated: false 
+      });
+    }
+  });
 }
